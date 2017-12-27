@@ -1,0 +1,6 @@
+src/*.o
+src/*.mod
+bin/minimize
+bin/*.a
+bin/*.dat
+bin/*.png
