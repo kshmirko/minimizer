@@ -1,6 +1,7 @@
 FC=gfortran
-FFLAGS=-Ofast -flto -fcheck= -I/usr/local/Cellar/netcdf/4.5.0/include -I/usr/local/Cellar/nlopt/include -Bshared
-LDFLAGS=-L/usr/local/Cellar/netcdf/4.5.0/lib -lnetcdf -lnetcdff -L/usr/local/Cellar/nlopt/lib -lnlopt -lm
+BASEPATH=/usr/local/Cellar
+FFLAGS=-Ofast -flto -fexternal-blas -fcheck= -I/$(BASEPATH)/netcdf/4.5.0/include -I$(BASEPATH)/nlopt/include -I$(BASEPATH)/openblas/0.2.20/include -Bshared
+LDFLAGS=-L$(BASEPATH)/netcdf/4.5.0/lib -lnetcdf -lnetcdff -L$(BASEPATH)/nlopt/lib -lnlopt -lm -L$(BASEPATH)/openblas/0.2.20/lib -lpthread -lgfortran -lopenblas
 
 OBJ=bin/libutils.a \
 		src/main.o

@@ -17,17 +17,25 @@ contains
 		! R(K,K,M) - результат свертки матрицы мюллера с распределением 
 		real(dp), intent(in) :: M(:,:,:,:), A(:)
 		real(dp), intent(out)	::	R(:,:,:)
-		integer i
-		double precision, allocatable	:: tmp(:,:,:,:)
+		integer i,NN,NM,NK,ND
+		double precision, allocatable	:: tmp(:)
 		
 		! выделяем память под промежуточный массив
-		allocate(tmp(size(M,1),size(M,2),size(M,3),size(M,4)))
+		NN=size(M,4)
+    NM=size(M,3)
+    NK=size(M,2)
+    ND=NK*NK*NM
+    allocate(tmp(ND))
 		
-		do i=1, size(M,4)
-			tmp(:,:,:,i) = M(:,:,:,i)*A(i)
-		end do
+    !свертка - это умножение матрицы на вектор
+    !для этого решейпим исходну матрицу мюллера, объединяем первые 3 размерности
+    !M(4,4,M,N)==>M(4*4*M,N)
+    !умножаем полученную матрицу на вектор длины N
+    !результат помещаем в вектор tmp(16*M)
+    call dgemv('N', ND, NN, 1.0_dp, reshape(M, (/ND, NN/)), ND, A, 1, 0.0_dp, tmp, 1)
 		
-		R(:,:,:) = sum(tmp, 4)
+    !возвращаем исходную форму матрицы
+		R(:,:,:) = reshape(tmp, (/NK,NK,NM/))
 		
 		deallocate(tmp)
 	end subroutine convolve4
